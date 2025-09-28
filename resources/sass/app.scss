@@ -1,0 +1,92 @@
+// Fonts
+@import url('https://fonts.bunny.net/css?family=Nunito');
+
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// Estilos personalizados de FaltaUno
+:root {
+    --primary-green: #2d5a27;
+    --secondary-green: #4a7c59;
+    --light-green: #e8f5e8;
+    --accent-orange: #ff8c42;
+    --text-dark: #2c3e50;
+    --text-light: #6c757d;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+// Estilos del header
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-green) !important;
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-dark) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--primary-green) !important;
+}
+
+// Botones personalizados
+.btn-primary-custom {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 90, 39, 0.3);
+}
+
+.btn-outline-custom {
+    border: 2px solid var(--primary-green);
+    color: var(--primary-green);
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+    background: var(--primary-green);
+    color: white;
+    transform: translateY(-2px);
+}
+
+// Dropdown personalizado
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 0.5rem 0;
+}
+
+.dropdown-item {
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background: var(--light-green);
+    color: var(--primary-green);
+}
+
+.dropdown-divider {
+    margin: 0.5rem 0;
+    border-color: #e9ecef;
+}

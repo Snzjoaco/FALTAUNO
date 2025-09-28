@@ -1,0 +1,470 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Header */
+.header {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #2d5a27;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #2d5a27;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #4a7c59;
+}
+
+.btn-primary {
+    background: #2d5a27;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: #4a7c59;
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #f0f8f0 0%, #e8f5e8 100%);
+    padding: 8rem 2rem 4rem;
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.hero-text {
+    flex: 1;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    color: #2d5a27;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.search-container {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #2d5a27;
+}
+
+.search-btn {
+    background: #2d5a27;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-links {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.btn-secondary {
+    background: #ff8c42;
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #666;
+    padding: 0.8rem 1.5rem;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stats {
+    display: flex;
+    gap: 2rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+}
+
+.hero-image {
+    flex: 1;
+    position: relative;
+}
+
+.map-placeholder {
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(45deg, #e8f5e8, #d4edda);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2d5a27;
+    font-size: 1.2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.map-placeholder::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="30" r="3" fill="%232d5a27"/><circle cx="60" cy="40" r="3" fill="%232d5a27"/><circle cx="80" cy="60" r="3" fill="%232d5a27"/><circle cx="40" cy="70" r="3" fill="%232d5a27"/></svg>');
+    opacity: 0.3;
+}
+
+/* Sections */
+.section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.section h2 {
+    font-size: 2.5rem;
+    color: #2d5a27;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+/* How it works */
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.step-card {
+    text-align: center;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.step-icon {
+    width: 80px;
+    height: 80px;
+    background: #e8f5e8;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: #2d5a27;
+}
+
+.step-number {
+    background: #2d5a27;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-weight: bold;
+}
+
+.step-card h3 {
+    color: #2d5a27;
+    margin-bottom: 1rem;
+}
+
+/* Featured pitches */
+.pitches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.pitch-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.pitch-card:hover {
+    transform: translateY(-5px);
+}
+
+.pitch-image {
+    height: 200px;
+    background: linear-gradient(45deg, #4a7c59, #6b9b6b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.pitch-info {
+    padding: 1.5rem;
+}
+
+.pitch-name {
+    font-size: 1.3rem;
+    color: #2d5a27;
+    margin-bottom: 0.5rem;
+}
+
+.pitch-location {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.pitch-price {
+    font-size: 1.5rem;
+    color: #2d5a27;
+    font-weight: bold;
+}
+
+/* Recent matches */
+.matches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.match-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border-left: 4px solid #2d5a27;
+}
+
+.match-title {
+    font-size: 1.2rem;
+    color: #2d5a27;
+    margin-bottom: 1rem;
+}
+
+.match-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.match-detail {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.match-price {
+    font-size: 1.3rem;
+    color: #2d5a27;
+    font-weight: bold;
+}
+
+/* Testimonials */
+.testimonials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.testimonial-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.testimonial-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4a7c59, #6b9b6b);
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2rem;
+}
+
+.testimonial-quote {
+    font-style: italic;
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+.testimonial-name {
+    font-weight: bold;
+    color: #2d5a27;
+    margin-bottom: 0.5rem;
+}
+
+.testimonial-role {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* CTA Section */
+.cta-section {
+    background: #f0f8f0;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+/* Footer */
+.footer {
+    background: #2d5a27;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .search-container {
+        flex-direction: column;
+    }
+
+    .stats {
+        justify-content: center;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
