@@ -13,8 +13,7 @@ class PartidoController extends Controller
     public function index(Request $request)
     {
         $query = Partido::with(['cancha', 'organizador'])
-            ->where('fecha', '>=', now())
-            ->where('estado', 'activo');
+            ->whereIn('estado', ['activo', 'publicado', 'completo']);
 
         // Filtros de búsqueda
         if ($request->filled('ubicacion')) {
@@ -29,15 +28,15 @@ class PartidoController extends Controller
         }
 
         if ($request->filled('nivel')) {
-            $query->where('nivel', $request->nivel);
+            $query->where('nivel_juego', $request->nivel);
         }
 
         if ($request->filled('precio_max')) {
-            $query->where('precio_por_persona', '<=', $request->precio_max);
+            $query->where('costo_por_jugador', '<=', $request->precio_max);
         }
 
         if ($request->filled('jugadores_faltantes')) {
-            $query->whereRaw('(jugadores_necesarios - jugadores_confirmados) >= ?', [$request->jugadores_faltantes]);
+            $query->whereRaw('(jugadores_requeridos - jugadores_confirmados) >= ?', [$request->jugadores_faltantes]);
         }
 
         $partidos = $query->orderBy('fecha', 'asc')->paginate(12);
@@ -59,26 +58,30 @@ class PartidoController extends Controller
             'cancha_id' => 'required|exists:canchas,id',
             'fecha' => 'required|date|after:now',
             'hora' => 'required',
-            'nivel' => 'required|in:principiante,intermedio,avanzado',
-            'jugadores_necesarios' => 'required|integer|min:4|max:22',
-            'precio_por_persona' => 'required|numeric|min:0',
-            'equipamiento_incluido' => 'boolean',
-            'contacto_whatsapp' => 'nullable|string|max:20'
+            'nivel' => 'required|in:casual,serio',
+            'jugadores_requeridos' => 'required|integer|min:1|max:22',
+            'costo_por_jugador' => 'required|numeric|min:0'
         ]);
 
+        $fechaHora = Carbon::parse($request->fecha . ' ' . $request->hora);
+        $horaFin = $fechaHora->copy()->addHours(2); // Asumir 2 horas de duración por defecto
+        
         $partido = Partido::create([
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
             'cancha_id' => $request->cancha_id,
             'organizador_id' => Auth::id(),
-            'fecha' => Carbon::parse($request->fecha . ' ' . $request->hora),
-            'nivel' => $request->nivel,
-            'jugadores_necesarios' => $request->jugadores_necesarios,
+            'fecha' => $fechaHora->format('Y-m-d'),
+            'hora_inicio' => $fechaHora->format('H:i:s'),
+            'hora_fin' => $horaFin->format('H:i:s'),
+            'fecha_hora_inicio' => $fechaHora,
+            'fecha_hora_fin' => $horaFin,
+            'nivel_juego' => $request->nivel,
+            'jugadores_requeridos' => $request->jugadores_requeridos,
             'jugadores_confirmados' => 1, // El organizador se cuenta automáticamente
-            'precio_por_persona' => $request->precio_por_persona,
-            'equipamiento_incluido' => $request->has('equipamiento_incluido'),
-            'contacto_whatsapp' => $request->contacto_whatsapp,
-            'estado' => 'activo'
+            'costo_por_jugador' => $request->costo_por_jugador,
+            'costo_total' => $request->costo_por_jugador * $request->jugadores_requeridos,
+            'estado' => 'publicado'
         ]);
 
         return redirect()->route('buscar-partidos')
@@ -95,15 +98,19 @@ class PartidoController extends Controller
     {
         $partido = Partido::findOrFail($id);
         
-        if ($partido->jugadores_confirmados >= $partido->jugadores_necesarios) {
+        if ($partido->jugadores_confirmados >= $partido->jugadores_requeridos) {
             return back()->with('error', 'Este partido ya está completo.');
         }
 
-        if ($partido->participantes()->where('user_id', Auth::id())->exists()) {
+        if ($partido->participantes()->where('jugador_id', Auth::id())->exists()) {
             return back()->with('error', 'Ya estás participando en este partido.');
         }
 
-        $partido->participantes()->attach(Auth::id());
+        $partido->participantes()->attach(Auth::id(), [
+            'estado' => 'confirmado',
+            'fecha_solicitud' => now(),
+            'fecha_confirmacion' => now()
+        ]);
         $partido->increment('jugadores_confirmados');
 
         return back()->with('success', '¡Te has unido al partido exitosamente!');
@@ -117,7 +124,7 @@ class PartidoController extends Controller
             return back()->with('error', 'No puedes abandonar un partido que organizas.');
         }
 
-        $partido->participantes()->detach(Auth::id());
+        $partido->participantes()->where('jugador_id', Auth::id())->detach();
         $partido->decrement('jugadores_confirmados');
 
         return back()->with('success', 'Has abandonado el partido.');

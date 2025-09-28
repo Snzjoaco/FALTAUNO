@@ -49,11 +49,13 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        text-decoration: none;
     }
     
     .filter-btn:hover {
         background: var(--primary-green);
         color: white;
+        text-decoration: none;
     }
     
     .filter-btn.active {
@@ -61,213 +63,38 @@
         color: white;
     }
     
-    .action-btn {
-        background: var(--primary-green);
-        color: white;
-        border: none;
-        padding: 0.75rem 1rem;
-        border-radius: 8px;
-        font-weight: 600;
-        width: 100%;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-    
-    .action-btn:hover {
-        background: var(--secondary-green);
-        color: white;
-    }
-    
-    .action-btn.secondary {
-        background: transparent;
-        color: var(--primary-green);
-        border: 1px solid var(--primary-green);
-    }
-    
-    .action-btn.secondary:hover {
-        background: var(--primary-green);
-        color: white;
-    }
-    
-    .profile-card {
-        background: var(--light-green);
-        border-radius: 8px;
-        padding: 1rem;
-        text-align: center;
-    }
-    
-    .profile-avatar {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: var(--primary-green);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin: 0 auto 0.5rem;
-    }
-    
-    .profile-name {
-        font-weight: bold;
-        color: var(--primary-green);
-        margin-bottom: 0.25rem;
-    }
-    
-    .profile-level {
-        color: var(--secondary-green);
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .profile-stats {
-        display: flex;
-        justify-content: space-around;
-        font-size: 0.8rem;
-        color: #666;
-    }
-    
-    .main-content {
+    .stats-card {
         background: white;
         border-radius: 12px;
-        padding: 2rem;
+        padding: 1.5rem;
         box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
     }
     
-    .content-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 1rem;
     }
     
-    .content-title {
-        font-size: 1.8rem;
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        background: var(--light-green);
+        border-radius: 8px;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
         font-weight: bold;
         color: var(--primary-green);
-        margin: 0;
+        display: block;
     }
     
-    .header-actions {
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-    
-    .btn-create {
-        background: var(--primary-green);
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-create:hover {
-        background: var(--secondary-green);
-        color: white;
-    }
-    
-    .btn-exit {
-        background: transparent;
+    .stat-label {
+        font-size: 0.9rem;
         color: #666;
-        border: 1px solid #ddd;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-exit:hover {
-        background: #f8f9fa;
-        color: var(--primary-green);
-    }
-    
-    .filters-section {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-    
-    .filter-group {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    
-    .filter-label {
-        font-weight: 600;
-        color: var(--primary-green);
-        font-size: 0.9rem;
-    }
-    
-    .filter-select {
-        padding: 0.5rem;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        font-size: 0.9rem;
-    }
-    
-    .search-input {
-        padding: 0.5rem 1rem;
-        border: 1px solid #ddd;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        min-width: 200px;
-    }
-    
-    .search-input:focus {
-        border-color: var(--primary-green);
-        outline: none;
-    }
-    
-    .status-tabs {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 2rem;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .status-tab {
-        background: transparent;
-        border: none;
-        color: #666;
-        padding: 1rem 1.5rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border-bottom: 3px solid transparent;
-    }
-    
-    .status-tab:hover {
-        color: var(--primary-green);
-    }
-    
-    .status-tab.active {
-        color: var(--primary-green);
-        border-bottom-color: var(--primary-green);
-    }
-    
-    .matches-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 1.5rem;
+        margin-top: 0.25rem;
     }
     
     .match-card {
@@ -275,21 +102,14 @@
         border-radius: 12px;
         padding: 1.5rem;
         box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-bottom: 1.5rem;
+        transition: transform 0.3s, box-shadow 0.3s;
         border-left: 4px solid var(--primary-green);
-        transition: transform 0.3s ease;
     }
     
     .match-card:hover {
         transform: translateY(-2px);
-    }
-    
-    .match-card.cancelled {
-        border-left-color: #dc3545;
-        opacity: 0.7;
-    }
-    
-    .match-card.organized {
-        border-left-color: var(--accent-orange);
+        box-shadow: 0 6px 25px rgba(0,0,0,0.15);
     }
     
     .match-header {
@@ -300,26 +120,56 @@
     }
     
     .match-title {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         font-weight: bold;
         color: var(--primary-green);
-        margin: 0;
+        margin-bottom: 0.5rem;
     }
     
-    .match-type {
-        background: var(--light-green);
-        color: var(--primary-green);
+    .match-role {
         padding: 0.25rem 0.75rem;
-        border-radius: 15px;
+        border-radius: 20px;
         font-size: 0.8rem;
         font-weight: 600;
     }
     
+    .role-organizador {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+    
+    .role-participante {
+        background: #f3e5f5;
+        color: #7b1fa2;
+    }
+    
+    .match-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .status-proximo {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-pasado {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-cancelado {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
     .match-details {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 1rem;
         margin-bottom: 1rem;
-        flex-wrap: wrap;
     }
     
     .detail-item {
@@ -332,134 +182,125 @@
     
     .detail-item i {
         color: var(--primary-green);
+        width: 16px;
     }
     
-    .match-status {
+    .match-tags {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
         margin-bottom: 1rem;
     }
     
-    .status-badge {
+    .match-tag {
+        background: var(--light-green);
+        color: var(--primary-green);
         padding: 0.25rem 0.75rem;
-        border-radius: 15px;
+        border-radius: 20px;
         font-size: 0.8rem;
-        font-weight: 600;
+        font-weight: 500;
     }
     
-    .status-badge.upcoming {
-        background: #d4edda;
-        color: #155724;
-    }
-    
-    .status-badge.past {
-        background: #f8d7da;
-        color: #721c24;
-    }
-    
-    .status-badge.organized {
-        background: #fff3cd;
-        color: #856404;
-    }
-    
-    .status-badge.pending {
-        background: #cce5ff;
-        color: #004085;
-    }
-    
-    .status-badge.cancelled {
-        background: #f8d7da;
-        color: #721c24;
+    .match-description {
+        color: #666;
+        margin-bottom: 1rem;
+        line-height: 1.5;
     }
     
     .match-actions {
         display: flex;
-        gap: 0.5rem;
+        gap: 1rem;
+        align-items: center;
         flex-wrap: wrap;
     }
     
-    .action-link {
-        background: var(--light-green);
-        color: var(--primary-green);
+    .btn-action {
         padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-size: 0.85rem;
-        font-weight: 500;
+        border-radius: 8px;
+        font-weight: 600;
         text-decoration: none;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        transition: all 0.3s ease;
+        transition: all 0.3s;
+        font-size: 0.9rem;
     }
     
-    .action-link:hover {
-        background: var(--primary-green);
+    .btn-primary {
+        background-color: var(--primary-green);
+        border: none;
         color: white;
     }
     
-    .action-link.danger {
-        background: #f8d7da;
-        color: #721c24;
-    }
-    
-    .action-link.danger:hover {
-        background: #dc3545;
+    .btn-primary:hover {
+        background-color: var(--secondary-green);
         color: white;
     }
     
-    .cta-section {
-        background: var(--light-green);
-        border-radius: 12px;
-        padding: 2rem;
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+        color: white;
+    }
+    
+    .btn-danger:hover {
+        background-color: #c82333;
+        color: white;
+    }
+    
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        color: white;
+    }
+    
+    .no-results {
         text-align: center;
-        margin-top: 2rem;
-    }
-    
-    .cta-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: var(--primary-green);
-        margin-bottom: 0.5rem;
-    }
-    
-    .cta-text {
+        padding: 3rem;
         color: #666;
+    }
+    
+    .no-results i {
+        font-size: 3rem;
+        color: #ddd;
         margin-bottom: 1rem;
     }
     
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    
+    .results-count {
+        font-size: 1.1rem;
+        color: var(--primary-green);
+        font-weight: 600;
+    }
+    
     @media (max-width: 768px) {
-        .my-matches-page {
-            padding: 100px 0 60px 0;
-        }
-        
         .sidebar {
             position: static;
             margin-bottom: 2rem;
         }
         
-        .content-header {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        
-        .filters-section {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        
-        .status-tabs {
-            flex-wrap: wrap;
-        }
-        
-        .matches-grid {
+        .match-details {
             grid-template-columns: 1fr;
         }
-    }
-    
-    @media (max-width: 576px) {
-        .my-matches-page {
-            padding: 80px 0 40px 0;
+        
+        .match-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .btn-action {
+            text-align: center;
         }
     }
 </style>
@@ -467,264 +308,185 @@
 <div class="my-matches-page">
     <div class="container">
         <div class="row">
-            <!-- Sidebar -->
+            <!-- Sidebar con filtros -->
             <div class="col-lg-3">
                 <div class="sidebar">
-                    <!-- Filtros Rápidos -->
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-filter"></i>
+                        Filtros
+                    </h3>
+                    
                     <div class="sidebar-section">
-                        <h3 class="sidebar-title">
-                            <i class="fas fa-filter"></i>
-                            Filtros Rápidos
-                        </h3>
-                        <button class="filter-btn active">
-                            <i class="fas fa-search"></i>
-                            Buscar
-                        </button>
-                        <button class="filter-btn">
-                            <i class="fas fa-calendar-week"></i>
-                            Esta semana
-                        </button>
-                        <button class="filter-btn">
-                            <i class="fas fa-futbol"></i>
-                            5v5
-                        </button>
-                        <button class="filter-btn">
-                            <i class="fas fa-map-marker-alt"></i>
-                            Cerca de mí
-                        </button>
+                        <a href="{{ route('mis-partidos', ['filtro' => 'proximos']) }}" 
+                           class="filter-btn {{ $filtro === 'proximos' ? 'active' : '' }}">
+                            <i class="fas fa-calendar-alt"></i>
+                            Próximos
+                        </a>
+                        <a href="{{ route('mis-partidos', ['filtro' => 'pasados']) }}" 
+                           class="filter-btn {{ $filtro === 'pasados' ? 'active' : '' }}">
+                            <i class="fas fa-history"></i>
+                            Pasados
+                        </a>
+                        <a href="{{ route('mis-partidos', ['filtro' => 'organizo']) }}" 
+                           class="filter-btn {{ $filtro === 'organizo' ? 'active' : '' }}">
+                            <i class="fas fa-crown"></i>
+                            Que Organizo
+                        </a>
+                        <a href="{{ route('mis-partidos', ['filtro' => 'pendientes']) }}" 
+                           class="filter-btn {{ $filtro === 'pendientes' ? 'active' : '' }}">
+                            <i class="fas fa-clock"></i>
+                            Pendientes
+                        </a>
                     </div>
                     
-                    <!-- Mi Perfil -->
                     <div class="sidebar-section">
-                        <h3 class="sidebar-title">
-                            <i class="fas fa-user"></i>
-                            Mi Perfil
-                        </h3>
-                        <div class="profile-card">
-                            <div class="profile-avatar">JP</div>
-                            <div class="profile-name">Juan Pérez</div>
-                            <div class="profile-level">Nivel: Intermedio</div>
-                            <div class="profile-stats">
-                                <div>
-                                    <div>15</div>
-                                    <div>Partidos</div>
-                                </div>
-                                <div>
-                                    <div>4.2</div>
-                                    <div>Rating</div>
-                                </div>
-                                <div>
-                                    <div>3</div>
-                                    <div>Organizados</div>
-                                </div>
+                        <h4 class="sidebar-title">
+                            <i class="fas fa-chart-bar"></i>
+                            Estadísticas
+                        </h4>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <span class="stat-number">{{ $pagination->where('organizador_id', auth()->id())->count() }}</span>
+                                <div class="stat-label">Organizados</div>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">{{ $pagination->where('organizador_id', '!=', auth()->id())->count() }}</span>
+                                <div class="stat-label">Participando</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- Contenido Principal -->
+            <!-- Contenido principal -->
             <div class="col-lg-9">
-                <div class="main-content">
-                    <!-- Header -->
-                    <div class="content-header">
-                        <h2 class="content-title">Mis Partidos</h2>
-                        <div class="header-actions">
-                            <a href="#" class="btn-create">
-                                <i class="fas fa-plus"></i>
-                                Crear partido
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <!-- Filtros -->
-                    <div class="filters-section">
-                        <div class="filter-group">
-                            <label class="filter-label">Filtrar por sede:</label>
-                            <select class="filter-select">
-                                <option>Todas</option>
-                                <option>F5 Arena</option>
-                                <option>La Esquina</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label class="filter-label">Tipo:</label>
-                            <select class="filter-select">
-                                <option>5v5, 7v7, 11v11</option>
-                                <option>5v5</option>
-                                <option>7v7</option>
-                                <option>11v11</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label class="filter-label">Esta semana</label>
-                        </div>
-                        <input type="text" class="search-input" placeholder="Buscar por nombre o barrio...">
-                    </div>
-                    
-                    <!-- Tabs de Estado -->
-                    <div class="status-tabs">
-                        <button class="status-tab active">Próximos</button>
-                        <button class="status-tab">Pasados</button>
-                        <button class="status-tab">Organizo</button>
-                        <button class="status-tab">Pendientes</button>
-                    </div>
-                    
-                    <!-- Lista de Partidos -->
-                    <div class="matches-grid">
-                        <!-- Partido 1 -->
-                        <div class="match-card">
-                            <div class="match-header">
-                                <h4 class="match-title">Mixto 6v6 en F5 Arena</h4>
-                                <span class="match-type">F5</span>
-                            </div>
-                            <div class="match-details">
-                                <div class="detail-item">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Palermo</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Hoy 20:00</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>10/12 jugadores</span>
-                                </div>
-                            </div>
-                            <div class="match-status">
-                                <span class="status-badge upcoming">Próximo</span>
-                                <span class="price-range">$5 p/p</span>
-                            </div>
-                            <div class="match-actions">
-                                <a href="#" class="action-link">
-                                    <i class="fas fa-eye"></i>
-                                    Ver detalles
-                                </a>
-                                <a href="#" class="action-link">
-                                    <i class="fas fa-comments"></i>
-                                    Chat
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <!-- Partido 2 -->
-                        <div class="match-card organized">
-                            <div class="match-header">
-                                <h4 class="match-title">Pickup 5v5 Nuñez</h4>
-                                <span class="match-type">F5</span>
-                            </div>
-                            <div class="match-details">
-                                <div class="detail-item">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Nuñez</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Mañana 19:30</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>8/10 jugadores</span>
-                                </div>
-                            </div>
-                            <div class="match-status">
-                                <span class="status-badge organized">Organizo</span>
-                                <span class="price-range">$4 p/p</span>
-                            </div>
-                            <div class="match-actions">
-                                <a href="#" class="action-link">
-                                    <i class="fas fa-cog"></i>
-                                    Gestionar
-                                </a>
-                                <a href="#" class="action-link">
-                                    <i class="fas fa-users"></i>
-                                    Jugadores
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <!-- Partido 3 -->
-                        <div class="match-card">
-                            <div class="match-header">
-                                <h4 class="match-title">Torneo Villa Urquiza</h4>
-                                <span class="match-type">F7</span>
-                            </div>
-                            <div class="match-details">
-                                <div class="detail-item">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Villa Urquiza</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Sáb 17:00</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>12/14 jugadores</span>
-                                </div>
-                            </div>
-                            <div class="match-status">
-                                <span class="status-badge pending">Pendiente</span>
-                                <span class="price-range">$10 p/p</span>
-                            </div>
-                            <div class="match-actions">
-                                <a href="#" class="action-link">
-                                    <i class="fas fa-eye"></i>
-                                    Ver detalles
-                                </a>
-                                <a href="#" class="action-link danger">
-                                    <i class="fas fa-times"></i>
-                                    Salir del partido
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <!-- Partido 4 -->
-                        <div class="match-card cancelled">
-                            <div class="match-header">
-                                <h4 class="match-title">Partido Cancelado</h4>
-                                <span class="match-type">F5</span>
-                            </div>
-                            <div class="match-details">
-                                <div class="detail-item">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span>Caballito</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Ayer 20:00</span>
-                                </div>
-                                <div class="detail-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>Cancelado</span>
-                                </div>
-                            </div>
-                            <div class="match-status">
-                                <span class="status-badge cancelled">Cancelado</span>
-                                <span class="price-range">-</span>
-                            </div>
-                            <div class="match-actions">
-                                <a href="#" class="action-link">
-                                    <i class="fas fa-eye"></i>
-                                    Ver detalles
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- CTA Section -->
-                    <div class="cta-section">
-                        <h3 class="cta-title">¿No ves el partido que buscás?</h3>
-                        <p class="cta-text">Crea un nuevo partido y encuentra jugadores</p>
-                        <a href="#" class="btn-create">
-                            <i class="fas fa-plus"></i>
-                            Crear nuevo partido
-                        </a>
+                <div class="results-header">
+                    <div class="results-count">
+                        {{ $pagination->total() }} partido(s) encontrado(s)
                     </div>
                 </div>
+                
+                @if($pagination->count() > 0)
+                    @foreach($pagination as $partido)
+                        <div class="match-card">
+                            <div class="match-header">
+                                <div>
+                                    <h4 class="match-title">{{ $partido->titulo }}</h4>
+                                    <span class="match-role {{ $partido->organizador_id === auth()->id() ? 'role-organizador' : 'role-participante' }}">
+                                        {{ $partido->organizador_id === auth()->id() ? 'Organizador' : 'Participante' }}
+                                    </span>
+                                </div>
+                                <span class="match-status status-{{ $partido->fecha >= now()->format('Y-m-d') ? 'proximo' : 'pasado' }}">
+                                    {{ $partido->fecha >= now()->format('Y-m-d') ? 'Próximo' : 'Pasado' }}
+                                </span>
+                            </div>
+                            
+                            <div class="match-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>{{ $partido->cancha->nombre }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>{{ $partido->fecha_formateada }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-users"></i>
+                                    <span>{{ $partido->jugadores_confirmados }}/{{ $partido->jugadores_requeridos }} jugadores</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <span>${{ number_format($partido->costo_por_jugador, 2) }} p/p</span>
+                                </div>
+                            </div>
+                            
+                            <div class="match-tags">
+                                <span class="match-tag">{{ $partido->nivel_formateado }}</span>
+                                <span class="match-tag">{{ $partido->jugadores_requeridos }}v{{ $partido->jugadores_requeridos }}</span>
+                                <span class="match-tag">{{ ucfirst($partido->estado) }}</span>
+                            </div>
+                            
+                            <p class="match-description">{{ $partido->descripcion }}</p>
+                            
+                            <div class="match-actions">
+                                @if($partido->organizador_id === auth()->id())
+                                    <!-- Acciones para organizador -->
+                                    <a href="#" class="btn-action btn-primary">
+                                        <i class="fas fa-edit"></i>
+                                        Editar
+                                    </a>
+                                    <a href="#" class="btn-action btn-primary">
+                                        <i class="fas fa-users"></i>
+                                        Participantes
+                                    </a>
+                                    @if($partido->estado !== 'cancelado')
+                                        <form action="{{ route('mis-partidos.cancelar-partido', $partido->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="btn-action btn-danger" onclick="return confirm('¿Estás seguro de cancelar este partido?')">
+                                                <i class="fas fa-times"></i>
+                                                Cancelar Partido
+                                            </button>
+                                        </form>
+                                    @endif
+                                @else
+                                    <!-- Acciones para participante -->
+                                    <a href="#" class="btn-action btn-primary">
+                                        <i class="fas fa-eye"></i>
+                                        Ver Detalles
+                                    </a>
+                                    @if($partido->estado !== 'cancelado' && $partido->fecha >= now()->format('Y-m-d'))
+                                        <form action="{{ route('mis-partidos.cancelar-participacion', $partido->id) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" class="btn-action btn-danger" onclick="return confirm('¿Estás seguro de cancelar tu participación?')">
+                                                <i class="fas fa-sign-out-alt"></i>
+                                                Cancelar Participación
+                                            </button>
+                                        </form>
+                                    @endif
+                                @endif
+                                
+                                <a href="#" class="btn-action btn-secondary">
+                                    <i class="fas fa-share"></i>
+                                    Compartir
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                    
+                    <!-- Paginación -->
+                    <div class="d-flex justify-content-center">
+                        {{ $pagination->links() }}
+                    </div>
+                @else
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h4>No se encontraron partidos</h4>
+                        <p>No tienes partidos en esta categoría.</p>
+                        <a href="{{ route('buscar-partidos') }}" class="btn-action btn-primary">
+                            <i class="fas fa-search"></i>
+                            Buscar Partidos
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 </div>
+
+@if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast.success('{{ session('success') }}');
+        });
+    </script>
+@endif
+
+@if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast.error('{{ session('error') }}');
+        });
+    </script>
+@endif
+
 @endsection

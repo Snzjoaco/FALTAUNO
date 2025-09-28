@@ -5,20 +5,53 @@
 @section('content')
 
 @if (session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 80px; margin-bottom: 0; border-radius: 0;">
-        <i class="fas fa-check-circle me-2"></i>
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast.success('{{ session('success') }}');
+        });
+    </script>
 @endif
 
 @if (session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 80px; margin-bottom: 0; border-radius: 0;">
-        <i class="fas fa-exclamation-circle me-2"></i>
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            showToast.error('{{ session('error') }}');
+        });
+    </script>
 @endif
+
+<!-- Botón de prueba para verificar notificaciones -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Crear botón de prueba
+    const testButton = document.createElement('button');
+    testButton.innerHTML = '🧪 Probar Notificaciones';
+    testButton.style.cssText = `
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 10000;
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 12px;
+    `;
+    testButton.onclick = function() {
+        if (window.showToast) {
+            showToast.success('¡Notificación de prueba funcionando!');
+            showToast.error('Error de prueba');
+            showToast.warning('Advertencia de prueba');
+            showToast.info('Información de prueba');
+        } else {
+            alert('showToast no está disponible');
+        }
+    };
+    document.body.appendChild(testButton);
+});
+</script>
 <style>
     * {
         box-sizing: border-box;

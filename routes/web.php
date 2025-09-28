@@ -38,9 +38,9 @@ Route::post('/register', [RegisterController::class, 'store']);
 
 // Rutas protegidas (requieren autenticación)
 Route::middleware('auth')->group(function () {
-    Route::get('/mis-partidos', function () {
-        return view('mis-partidos');
-    })->name('mis-partidos');
+    Route::get('/mis-partidos', [App\Http\Controllers\MisPartidosController::class, 'index'])->name('mis-partidos');
+    Route::post('/mis-partidos/{partido}/cancelar-participacion', [App\Http\Controllers\MisPartidosController::class, 'cancelarParticipacion'])->name('mis-partidos.cancelar-participacion');
+    Route::post('/mis-partidos/{partido}/cancelar-partido', [App\Http\Controllers\MisPartidosController::class, 'cancelarPartido'])->name('mis-partidos.cancelar-partido');
     
     Route::get('/perfil', function () {
         return view('perfil');

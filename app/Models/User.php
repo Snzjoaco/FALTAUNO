@@ -77,8 +77,8 @@ class User extends Authenticatable
 
     public function partidosParticipando()
     {
-        return $this->belongsToMany(Partido::class, 'participantes_partidos')
-                    ->withPivot('fecha_inscripcion')
+        return $this->belongsToMany(Partido::class, 'participantes_partidos', 'jugador_id', 'partido_id')
+                    ->withPivot('estado', 'fecha_solicitud', 'fecha_confirmacion')
                     ->withTimestamps();
     }
 

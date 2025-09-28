@@ -16,19 +16,24 @@ class Partido extends Model
         'cancha_id',
         'organizador_id',
         'fecha',
-        'nivel',
-        'jugadores_necesarios',
+        'hora_inicio',
+        'hora_fin',
+        'fecha_hora_inicio',
+        'fecha_hora_fin',
+        'nivel_juego',
+        'jugadores_requeridos',
         'jugadores_confirmados',
-        'precio_por_persona',
-        'equipamiento_incluido',
-        'contacto_whatsapp',
+        'costo_por_jugador',
+        'costo_total',
         'estado'
     ];
 
     protected $casts = [
-        'fecha' => 'datetime',
-        'equipamiento_incluido' => 'boolean',
-        'precio_por_persona' => 'decimal:2'
+        'fecha' => 'date',
+        'fecha_hora_inicio' => 'datetime',
+        'fecha_hora_fin' => 'datetime',
+        'costo_por_jugador' => 'decimal:2',
+        'costo_total' => 'decimal:2'
     ];
 
     // Relaciones
@@ -44,8 +49,8 @@ class Partido extends Model
 
     public function participantes()
     {
-        return $this->belongsToMany(User::class, 'participantes_partidos')
-                    ->withPivot('fecha_inscripcion')
+        return $this->belongsToMany(User::class, 'participantes_partidos', 'partido_id', 'jugador_id')
+                    ->withPivot('estado', 'fecha_solicitud', 'fecha_confirmacion')
                     ->withTimestamps();
     }
 
@@ -58,7 +63,7 @@ class Partido extends Model
 
     public function scopePorNivel($query, $nivel)
     {
-        return $query->where('nivel', $nivel);
+        return $query->where('nivel_juego', $nivel);
     }
 
     public function scopePorUbicacion($query, $ubicacion)
@@ -72,41 +77,43 @@ class Partido extends Model
     // Accessors
     public function getJugadoresFaltantesAttribute()
     {
-        return $this->jugadores_necesarios - $this->jugadores_confirmados;
+        return $this->jugadores_requeridos - $this->jugadores_confirmados;
     }
 
     public function getEstaCompletoAttribute()
     {
-        return $this->jugadores_confirmados >= $this->jugadores_necesarios;
+        return $this->jugadores_confirmados >= $this->jugadores_requeridos;
     }
 
     public function getFechaFormateadaAttribute()
     {
-        return $this->fecha->format('d/m/Y H:i');
+        if ($this->fecha_hora_inicio) {
+            return $this->fecha_hora_inicio->format('d/m/Y H:i');
+        }
+        return $this->fecha->format('d/m/Y');
     }
 
     public function getNivelFormateadoAttribute()
     {
         $niveles = [
-            'principiante' => 'Principiante',
-            'intermedio' => 'Intermedio',
-            'avanzado' => 'Avanzado'
+            'casual' => 'Casual',
+            'serio' => 'Serio'
         ];
         
-        return $niveles[$this->nivel] ?? $this->nivel;
+        return $niveles[$this->nivel_juego] ?? $this->nivel_juego;
     }
 
     // Métodos
     public function puedeUnirse($userId)
     {
         return !$this->esta_completo && 
-               !$this->participantes()->where('user_id', $userId)->exists() &&
+               !$this->participantes()->where('jugador_id', $userId)->exists() &&
                $this->organizador_id !== $userId;
     }
 
     public function puedeAbandonar($userId)
     {
-        return $this->participantes()->where('user_id', $userId)->exists() &&
+        return $this->participantes()->where('jugador_id', $userId)->exists() &&
                $this->organizador_id !== $userId;
     }
 

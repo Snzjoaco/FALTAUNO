@@ -345,9 +345,8 @@
                             <label for="nivel" class="filter-label">Nivel</label>
                             <select id="nivel" name="nivel" class="filter-select">
                                 <option value="">Todos los niveles</option>
-                                <option value="principiante" {{ request('nivel') == 'principiante' ? 'selected' : '' }}>Principiante</option>
-                                <option value="intermedio" {{ request('nivel') == 'intermedio' ? 'selected' : '' }}>Intermedio</option>
-                                <option value="avanzado" {{ request('nivel') == 'avanzado' ? 'selected' : '' }}>Avanzado</option>
+                                <option value="casual" {{ request('nivel') == 'casual' ? 'selected' : '' }}>Casual</option>
+                                <option value="serio" {{ request('nivel') == 'serio' ? 'selected' : '' }}>Serio</option>
                             </select>
                         </div>
                         
@@ -437,13 +436,13 @@
                                 </div>
                                 <div class="detail-item">
                                     <i class="fas fa-dollar-sign"></i>
-                                    <span>${{ number_format($partido->precio_por_persona, 2) }} p/p</span>
+                                    <span>${{ number_format($partido->costo_por_jugador, 2) }} p/p</span>
                                 </div>
                             </div>
                             
                             <div class="match-tags">
                                 <span class="match-tag">{{ $partido->nivel_formateado }}</span>
-                                <span class="match-tag">{{ $partido->jugadores_necesarios }}v{{ $partido->jugadores_necesarios }}</span>
+                                <span class="match-tag">{{ $partido->jugadores_requeridos }}v{{ $partido->jugadores_requeridos }}</span>
                                 @if($partido->equipamiento_incluido)
                                     <span class="match-tag">Equipamiento incluido</span>
                                 @endif
@@ -524,7 +523,7 @@
 @if(session('success'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            alert('{{ session('success') }}');
+            showToast.success('{{ session('success') }}');
         });
     </script>
 @endif
@@ -532,7 +531,7 @@
 @if(session('error'))
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            alert('{{ session('error') }}');
+            showToast.error('{{ session('error') }}');
         });
     </script>
 @endif

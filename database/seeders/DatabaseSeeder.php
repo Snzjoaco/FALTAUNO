@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         // Seeders específicos
         $this->call([
             CanchaSeeder::class,
+            PartidoSeeder::class,
         ]);
     }
 }

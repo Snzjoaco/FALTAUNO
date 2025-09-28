@@ -242,6 +242,160 @@
         
 
     </style>
+    
+    <!-- Sistema de notificaciones toast -->
+    <style>
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+        }
+        
+        .toast {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+            margin-bottom: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid;
+            animation: slideInRight 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-green), var(--secondary-green));
+        }
+        
+        .toast-success {
+            border-left-color: #28a745;
+        }
+        
+        .toast-error {
+            border-left-color: #dc3545;
+        }
+        
+        .toast-warning {
+            border-left-color: #ffc107;
+        }
+        
+        .toast-info {
+            border-left-color: #17a2b8;
+        }
+        
+        .toast-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .toast-success .toast-icon {
+            background: #28a745;
+        }
+        
+        .toast-error .toast-icon {
+            background: #dc3545;
+        }
+        
+        .toast-warning .toast-icon {
+            background: #ffc107;
+        }
+        
+        .toast-info .toast-icon {
+            background: #17a2b8;
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 4px 0;
+            font-size: 14px;
+        }
+        
+        .toast-message {
+            color: #666;
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .toast-close:hover {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        .toast.fade-out {
+            animation: slideOutRight 0.3s ease-in forwards;
+        }
+        
+        @media (max-width: 768px) {
+            .toast-container {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+            
+            .toast {
+                padding: 14px 16px;
+            }
+        }
+    </style>
+    
     @stack('styles')
 </head>
 <body>
@@ -301,6 +455,9 @@
         @yield('content')
     </main>
 
+    <!-- Contenedor de notificaciones toast -->
+    <div id="toast-container" class="toast-container"></div>
+    
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -319,12 +476,111 @@
         </div>
     </footer>
 
+    <!-- Sistema de notificaciones toast -->
+    <script>
+        class ToastNotification {
+            constructor() {
+                this.container = document.getElementById('toast-container');
+                if (!this.container) {
+                    console.error('Toast container not found');
+                    return;
+                }
+            }
+            
+            show(message, type = 'info', title = null, duration = 5000) {
+                if (!this.container) {
+                    console.error('Toast container not available');
+                    return;
+                }
+                
+                const toast = this.createToast(message, type, title);
+                this.container.appendChild(toast);
+                
+                // Auto remove after duration
+                setTimeout(() => {
+                    this.remove(toast);
+                }, duration);
+                
+                return toast;
+            }
+            
+            createToast(message, type, title) {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                
+                const icons = {
+                    success: 'fas fa-check',
+                    error: 'fas fa-times',
+                    warning: 'fas fa-exclamation-triangle',
+                    info: 'fas fa-info-circle'
+                };
+                
+                const titles = {
+                    success: title || 'Éxito',
+                    error: title || 'Error',
+                    warning: title || 'Advertencia',
+                    info: title || 'Información'
+                };
+                
+                toast.innerHTML = `
+                    <div class="toast-icon">
+                        <i class="${icons[type]}"></i>
+                    </div>
+                    <div class="toast-content">
+                        <div class="toast-title">${titles[type]}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <button class="toast-close" onclick="toastNotification.remove(this.parentElement)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                
+                return toast;
+            }
+            
+            remove(toast) {
+                toast.classList.add('fade-out');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.parentElement.removeChild(toast);
+                    }
+                }, 300);
+            }
+            
+            success(message, title = null, duration = 5000) {
+                return this.show(message, 'success', title, duration);
+            }
+            
+            error(message, title = null, duration = 7000) {
+                return this.show(message, 'error', title, duration);
+            }
+            
+            warning(message, title = null, duration = 6000) {
+                return this.show(message, 'warning', title, duration);
+            }
+            
+            info(message, title = null, duration = 5000) {
+                return this.show(message, 'info', title, duration);
+            }
+        }
+        
+        // Inicializar sistema de notificaciones cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            const toastNotification = new ToastNotification();
+            window.showToast = toastNotification;
+            
+            // Test function para verificar que funciona
+            window.testToast = function() {
+                showToast.success('¡Notificación de prueba funcionando!');
+            };
+        });
+    </script>
+    
     @stack('scripts')
     
     <!-- Popper.js y Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    
     
 </body>
 </html>

@@ -192,9 +192,8 @@
                         </label>
                         <select id="nivel" name="nivel" class="form-select" required>
                             <option value="">Selecciona el nivel</option>
-                            <option value="principiante" {{ old('nivel') == 'principiante' ? 'selected' : '' }}>Principiante</option>
-                            <option value="intermedio" {{ old('nivel') == 'intermedio' ? 'selected' : '' }}>Intermedio</option>
-                            <option value="avanzado" {{ old('nivel') == 'avanzado' ? 'selected' : '' }}>Avanzado</option>
+                            <option value="casual" {{ old('nivel') == 'casual' ? 'selected' : '' }}>Casual</option>
+                            <option value="serio" {{ old('nivel') == 'serio' ? 'selected' : '' }}>Serio</option>
                         </select>
                         @error('nivel')
                             <div class="text-danger mt-1">{{ $message }}</div>
@@ -239,38 +238,39 @@
                 <!-- Jugadores y precio -->
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="jugadores_necesarios" class="form-label">
+                        <label for="jugadores_requeridos" class="form-label">
                             Jugadores necesarios <span class="required">*</span>
                         </label>
-                        <select id="jugadores_necesarios" name="jugadores_necesarios" class="form-select" required>
-                            <option value="">Selecciona cantidad</option>
-                            @for($i = 4; $i <= 22; $i += 2)
-                                <option value="{{ $i }}" {{ old('jugadores_necesarios') == $i ? 'selected' : '' }}>
-                                    {{ $i }} jugadores
-                                </option>
-                            @endfor
-                        </select>
-                        <div class="form-help">Incluyéndote a ti</div>
-                        @error('jugadores_necesarios')
+                        <input type="number" 
+                               id="jugadores_requeridos" 
+                               name="jugadores_requeridos" 
+                               class="form-input" 
+                               placeholder="1"
+                               min="1"
+                               max="22"
+                               value="{{ old('jugadores_requeridos') }}"
+                               required>
+                        <div class="form-help">Mínimo 1 jugador (incluyéndote a ti)</div>
+                        @error('jugadores_requeridos')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
                     
                     <div class="form-group">
-                        <label for="precio_por_persona" class="form-label">
+                        <label for="costo_por_jugador" class="form-label">
                             Precio por persona ($) <span class="required">*</span>
                         </label>
                         <input type="number" 
-                               id="precio_por_persona" 
-                               name="precio_por_persona" 
+                               id="costo_por_jugador" 
+                               name="costo_por_jugador" 
                                class="form-input" 
                                placeholder="0.00"
                                step="0.01"
                                min="0"
-                               value="{{ old('precio_por_persona') }}"
+                               value="{{ old('costo_por_jugador') }}"
                                required>
                         <div class="form-help">Costo total dividido entre todos</div>
-                        @error('precio_por_persona')
+                        @error('costo_por_jugador')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
