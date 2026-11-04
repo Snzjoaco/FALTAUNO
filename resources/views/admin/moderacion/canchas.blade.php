@@ -10,10 +10,15 @@
         <p class="text-muted mb-0">Los dueños publican sus canchas automáticamente. Desde acá podés suspender una publicación si hace falta.</p>
     </div>
     @if (session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
+    <form method="GET" class="filters-section d-flex flex-wrap gap-2 mb-4">
+        <input name="buscar" value="{{ request('buscar') }}" class="form-control" placeholder="Buscar por cancha, ciudad o dueño" aria-label="Buscar cancha o dueño">
+        <button class="btn btn-primary">Buscar</button>
+        <a href="{{ route('admin.moderacion.canchas.index') }}" class="btn btn-outline-secondary">Limpiar</a>
+    </form>
     <div class="card">
         <div class="table-responsive">
             <table class="table align-middle mb-0">
-                <thead><tr><th>Cancha</th><th>Dueño</th><th>Ubicación</th><th>Publicación</th><th>Moderación</th></tr></thead>
+                <thead><tr><th>Cancha / complejo</th><th>Dueño</th><th>Ubicación</th><th>Publicación</th><th>Acciones</th></tr></thead>
                 <tbody>
                     @foreach ($canchas as $cancha)
                         <tr>
@@ -37,6 +42,15 @@
                                     </select>
                                     <button class="btn btn-sm btn-outline-primary">Guardar</button>
                                 </form>
+                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                    <a class="btn btn-sm btn-outline-secondary" href="{{ route('admin.canchas.edit', $cancha) }}">Editar datos</a>
+                                    <form method="POST" action="{{ route('admin.moderacion.canchas.destacada', $cancha) }}">
+                                        @csrf
+                                        <button class="btn btn-sm {{ $cancha->destacada ? 'btn-outline-warning' : 'btn-outline-success' }}">
+                                            {{ $cancha->destacada ? 'Quitar de destacadas' : 'Destacar en home' }}
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach

@@ -871,42 +871,30 @@
     <div class="container">
         <h2 class="section-title">Canchas de la zona</h2>
         <div class="row g-4">
-            <div class="col-md-4">
-                <div class="pitch-card">
-                    <div class="pitch-image">
-                        <i class="fas fa-futbol fa-3x"></i>
-                    </div>
-                    <div class="pitch-info">
-                        <div class="pitch-name">Complejo La Candelaria</div>
-                        <div class="pitch-location">Río Cuarto</div>
-                        <div class="pitch-price">$18/h</div>
-                    </div>
+            @forelse ($featuredCanchas as $cancha)
+                <div class="col-md-4">
+                    <a class="pitch-card d-block text-decoration-none" href="{{ route('reservar-canchas') }}">
+                        <div class="pitch-image">
+                            @if ($cancha->imagen_principal)
+                                <img src="{{ asset('storage/'.$cancha->imagen_principal) }}" alt="Cancha {{ $cancha->nombre }}" class="w-100 h-100 object-fit-cover">
+                            @elseif ($cancha->logo_path)
+                                <img src="{{ asset('storage/'.$cancha->logo_path) }}" alt="Logo de {{ $cancha->nombre }}" class="w-100 h-100 object-fit-contain">
+                            @else
+                                <i class="fas fa-futbol fa-3x" aria-hidden="true"></i>
+                            @endif
+                        </div>
+                        <div class="pitch-info">
+                            <div class="pitch-name">{{ $cancha->nombre }}</div>
+                            <div class="pitch-location">{{ $cancha->ciudad }}</div>
+                            <div class="pitch-price">{{ $cancha->precio_formateado }} por hora</div>
+                        </div>
+                    </a>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="pitch-card">
-                    <div class="pitch-image">
-                        <i class="fas fa-futbol fa-3x"></i>
-                    </div>
-                    <div class="pitch-info">
-                        <div class="pitch-name">Club Deportivo Río</div>
-                        <div class="pitch-location">Río Cuarto</div>
-                        <div class="pitch-price">$20/h</div>
-                    </div>
+            @empty
+                <div class="col-12 text-center text-muted">
+                    <p class="mb-0">Próximamente vas a encontrar acá las canchas destacadas.</p>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="pitch-card">
-                    <div class="pitch-image">
-                        <i class="fas fa-futbol fa-3x"></i>
-                    </div>
-                    <div class="pitch-info">
-                        <div class="pitch-name">Cancha Norte 7</div>
-                        <div class="pitch-location">Río Cuarto</div>
-                        <div class="pitch-price">$22/h</div>
-                    </div>
-                </div>
-            </div>
+            @endforelse
         </div>
     </div>
 </section>

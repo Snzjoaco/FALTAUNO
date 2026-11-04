@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Cancha;
 use App\Models\Reserva;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -145,11 +144,6 @@ class ReservaPublicaController extends Controller
 
     private function availableCourts()
     {
-        return Cancha::query()
-            ->where('activa', true)
-            ->whereHas('propietario', function ($query) {
-                $query->where('role', User::ROLE_COURT_OWNER)
-                    ->where('is_suspended', false);
-            });
+        return Cancha::publicadas();
     }
 }

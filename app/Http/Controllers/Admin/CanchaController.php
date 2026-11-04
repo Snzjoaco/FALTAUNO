@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminActivity;
 use App\Models\Cancha;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -106,6 +107,9 @@ class CanchaController extends Controller
             'horas_cancelacion_gratuita' => 'required|integer|min:0|max:168',
             'porcentaje_penalidad_cancelacion' => 'required|numeric|min:0|max:100',
             'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'instagram_url' => 'nullable|url|max:255',
+            'horario_atencion' => 'nullable|string|max:1000',
             'horarios_semana' => 'nullable|array',
             'horarios_fin_semana' => 'nullable|array',
         ]);
@@ -115,6 +119,12 @@ class CanchaController extends Controller
         $data['activa'] = true;
         $data['verificada'] = false;
         $data['suspendida_admin'] = false;
+        $data['instagram_url'] = $request->input('instagram_url');
+        $data['horario_atencion'] = $request->input('horario_atencion');
+
+        if ($request->hasFile('logo')) {
+            $data['logo_path'] = $request->file('logo')->store('complejos/logos', 'public');
+        }
         
         // Debug: Log de los datos procesados
         \Log::info('Datos procesados antes de crear:', $data);
@@ -148,6 +158,10 @@ class CanchaController extends Controller
         
         try {
             $cancha = Cancha::create($data);
+            AdminActivity::record('court.created', $cancha, null, [
+                'owner_id' => $cancha->propietario_id,
+                'name' => $cancha->nombre,
+            ]);
             \Log::info('Cancha creada exitosamente:', ['id' => $cancha->id, 'nombre' => $cancha->nombre]);
             
             return redirect()
@@ -199,6 +213,10 @@ class CanchaController extends Controller
     public function update(Request $request, $id)
     {
         $cancha = $this->managedCanchas()->findOrFail($id);
+        $oldValues = $cancha->only([
+            'nombre', 'direccion', 'ciudad', 'precio_base', 'activa', 'destacada',
+            'instagram_url', 'horario_atencion',
+        ]);
         
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
@@ -228,6 +246,9 @@ class CanchaController extends Controller
             'horas_cancelacion_gratuita' => 'required|integer|min:0|max:168',
             'porcentaje_penalidad_cancelacion' => 'required|numeric|min:0|max:100',
             'imagenes.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:4096',
+            'instagram_url' => 'nullable|url|max:255',
+            'horario_atencion' => 'nullable|string|max:1000',
             'horarios_semana' => 'nullable|array',
             'horarios_fin_semana' => 'nullable|array',
         ]);
@@ -244,6 +265,11 @@ class CanchaController extends Controller
         // Procesar horarios
         $data['horarios_semana'] = $request->horarios_semana ?? [];
         $data['horarios_fin_semana'] = $request->horarios_fin_semana ?? [];
+        $data['instagram_url'] = $request->input('instagram_url');
+        $data['horario_atencion'] = $request->input('horario_atencion');
+        if ($request->hasFile('logo')) {
+            $data['logo_path'] = $request->file('logo')->store('complejos/logos', 'public');
+        }
         
         // Procesar nuevas imágenes
         if ($request->hasFile('imagenes')) {
@@ -265,6 +291,10 @@ class CanchaController extends Controller
         }
         
         $cancha->update($data);
+        AdminActivity::record('court.updated', $cancha, $oldValues, $cancha->only([
+            'nombre', 'direccion', 'ciudad', 'precio_base', 'activa', 'destacada',
+            'instagram_url', 'horario_atencion',
+        ]));
         
         return redirect()
             ->route('admin.canchas.show', $cancha->id)
@@ -277,11 +307,13 @@ class CanchaController extends Controller
     public function destroy($id)
     {
         $cancha = $this->managedCanchas()->findOrFail($id);
+        $oldValues = $cancha->only(['activa', 'suspendida_admin']);
 
         $cancha->update([
             'activa' => false,
             'suspendida_admin' => Auth::user()->isPlatformAdmin(),
         ]);
+        AdminActivity::record('court.deactivated', $cancha, $oldValues, $cancha->only(['activa', 'suspendida_admin']));
         
         return redirect()
             ->route('admin.canchas.index')
@@ -299,7 +331,11 @@ class CanchaController extends Controller
             abort(403, 'Solo un administrador de plataforma puede reactivar una cancha suspendida.');
         }
 
+        $oldActive = $cancha->activa;
         $cancha->update(['activa' => !$cancha->activa]);
+        AdminActivity::record('court.status_toggled', $cancha, ['activa' => $oldActive], [
+            'activa' => $cancha->activa,
+        ]);
         
         $estado = $cancha->activa ? 'activada' : 'desactivada';
         

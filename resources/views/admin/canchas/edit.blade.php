@@ -87,6 +87,39 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="instagram_url" class="form-label">Instagram o redes</label>
+                            <input type="url" class="form-control @error('instagram_url') is-invalid @enderror"
+                                   id="instagram_url" name="instagram_url" value="{{ old('instagram_url', $cancha->instagram_url) }}"
+                                   placeholder="https://instagram.com/tucomplejo">
+                            @error('instagram_url')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="horario_atencion" class="form-label">Horario de atención</label>
+                            <input type="text" class="form-control @error('horario_atencion') is-invalid @enderror"
+                                   id="horario_atencion" name="horario_atencion" value="{{ old('horario_atencion', $cancha->horario_atencion) }}"
+                                   placeholder="Lunes a domingo, 9:00 a 23:00">
+                            @error('horario_atencion')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label for="logo" class="form-label">Logo del complejo</label>
+                            @if ($cancha->logo_path)
+                                <div class="mb-2"><img src="{{ asset('storage/'.$cancha->logo_path) }}" alt="Logo actual" style="max-height: 80px"></div>
+                            @endif
+                            <input type="file" class="form-control @error('logo') is-invalid @enderror"
+                                   id="logo" name="logo" accept="image/jpeg,image/png,image/webp">
+                            <div class="form-text">JPG, PNG o WebP; máximo 4 MB.</div>
+                            @error('logo')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
                     
                     <!-- Ubicación -->

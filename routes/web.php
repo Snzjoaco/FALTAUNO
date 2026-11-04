@@ -5,10 +5,18 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ReservaPublicaController;
 
 Route::get('/', function () {
-    return view('welcome');
+    $featuredCanchas = App\Models\Cancha::publicadas()
+        ->destacadas()
+        ->latest()
+        ->limit(6)
+        ->get();
+
+    return view('welcome', compact('featuredCanchas'));
 })->name('welcome');
 
 // Ruta temporal para probar formulario
@@ -26,6 +34,10 @@ Route::get('/reservar-canchas', [ReservaPublicaController::class, 'index'])->nam
 Route::get('/login', [LoginController::class, 'create'])->name('login');
 Route::post('/login', [LoginController::class, 'store']);
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
+Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 Route::get('/register', [RegisterController::class, 'create'])->name('register');
 Route::post('/register', [RegisterController::class, 'store']);
@@ -78,8 +90,24 @@ Route::middleware(['auth', 'account.active'])->group(function () {
                 Route::post('/usuarios/{user}/suspension', [App\Http\Controllers\Admin\ModerationController::class, 'toggleSuspension'])->name('usuarios.suspension');
                 Route::get('/canchas', [App\Http\Controllers\Admin\ModerationController::class, 'courts'])->name('canchas.index');
                 Route::put('/canchas/{cancha}', [App\Http\Controllers\Admin\ModerationController::class, 'updateCourt'])->name('canchas.update');
+                Route::post('/canchas/{cancha}/destacada', [App\Http\Controllers\Admin\ModerationController::class, 'toggleFeatured'])->name('canchas.destacada');
                 Route::get('/partidos', [App\Http\Controllers\Admin\ModerationController::class, 'matches'])->name('partidos.index');
                 Route::put('/partidos/{partido}', [App\Http\Controllers\Admin\ModerationController::class, 'updateMatch'])->name('partidos.update');
+                Route::get('/actividad', [App\Http\Controllers\Admin\ModerationController::class, 'activities'])->name('actividad.index');
+            });
+
+        Route::prefix('duenos')->name('duenos.')
+            ->middleware('role:admin_plataforma')
+            ->controller(App\Http\Controllers\Admin\OwnerManagementController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/crear', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
+                Route::get('/{owner}/editar', 'edit')->name('edit');
+                Route::put('/{owner}', 'update')->name('update');
+                Route::post('/{owner}/invitacion', 'resendInvitation')->name('invitation');
+                Route::put('/{owner}/estado', 'setStatus')->name('status');
+                Route::post('/{owner}/pago', 'markPaid')->name('payment');
             });
     });
 });

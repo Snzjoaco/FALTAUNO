@@ -62,13 +62,16 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 ## Roles de FaltaUno
 
-Las cuentas nuevas se registran como **Jugador**. El **Dueño de cancha** y el **Admin de plataforma** tienen permisos adicionales; los dueños pueden administrar únicamente sus canchas, turnos y reservas. El Admin puede asignar o retirar el rol de dueño, suspender cuentas y moderar canchas y partidos. Las canchas activas se publican automáticamente, sin aprobación previa; el Admin puede suspenderlas posteriormente desde el panel.
+Las cuentas nuevas se registran como **Jugador**. El **Dueño de cancha** y el **Admin de plataforma** tienen permisos adicionales; los dueños pueden administrar únicamente sus canchas, turnos y reservas. El Admin invita a los dueños desde el panel para que definan su contraseña, y desde allí puede gestionarlos, registrar pagos manuales, moderar publicaciones y partidos, y consultar el registro de actividad. Las canchas activas se publican automáticamente, sin aprobación previa; el Admin puede suspenderlas o destacarlas desde el panel.
 
-Después de ejecutar las migraciones, registrá la cuenta que será el primer administrador y asignale el rol desde la consola:
+El rol de Admin de plataforma se asigna manualmente en la base de datos. Después de registrar la cuenta y ejecutar las migraciones, actualizá el rol de esa cuenta:
 
-```bash
-php artisan migrate
-php artisan app:make-admin admin@tu-dominio.com
+```sql
+UPDATE users
+SET role = 'admin_plataforma'
+WHERE email = 'admin@tu-dominio.com';
 ```
 
-El comando solo acepta el email de una cuenta existente y no solicita ni modifica su contraseña. Luego, desde el panel, el administrador puede asignar el rol de Dueño de cancha a las cuentas correspondientes.
+Los nuevos dueños deben crearse desde Gestión de dueños para recibir la invitación, la prueba gratuita y el registro de su complejo.
+
+La fecha de inicio de prueba para dueños preexistentes se toma al aplicar la migración de gestión. Para que el estado de facturación vencida también se actualice diariamente, configurá el planificador de Laravel en el entorno de despliegue (en Windows, ejecutá `php artisan schedule:run` desde el Programador de tareas cada minuto).

@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
@@ -25,5 +29,22 @@ class ResetPasswordController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
+
+    protected function resetPassword($user, $password)
+    {
+        $user->forceFill([
+            'password' => Hash::make($password),
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        event(new PasswordReset($user));
+
+        if ($user instanceof User && $user->owner_status === 'invitado') {
+            $user->owner_status = 'activo';
+            $user->is_suspended = false;
+            $user->email_verified_at = now();
+            $user->save();
+        }
+    }
 }

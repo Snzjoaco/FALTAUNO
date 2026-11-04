@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Cancha extends Model
@@ -47,6 +48,9 @@ class Cancha extends Model
         'suspendida_admin',
         'destacada',
         'fecha_verificacion',
+        'logo_path',
+        'instagram_url',
+        'horario_atencion',
         'imagenes',
         'imagen_principal',
         'horarios_semana',
@@ -107,9 +111,15 @@ class Cancha extends Model
         return $query->where('verificada', true);
     }
 
+    public function scopePublicadas(Builder $query): Builder
+    {
+        return $query->where('activa', true)
+            ->whereHas('propietario', fn (Builder $owner) => $owner->publiclyEligible());
+    }
+
     public function scopeDestacadas($query)
     {
-        return $query->where('destacadas', true);
+        return $query->where('destacada', true);
     }
 
     // Métodos de utilidad

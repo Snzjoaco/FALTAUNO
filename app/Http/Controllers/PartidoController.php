@@ -46,10 +46,7 @@ class PartidoController extends Controller
 
     public function create()
     {
-        $canchas = Cancha::where('activa', true)
-            ->whereHas('propietario', fn ($query) => $query
-                ->where('role', \App\Models\User::ROLE_COURT_OWNER)
-                ->where('is_suspended', false))
+        $canchas = Cancha::publicadas()
             ->get();
 
         return view('crear-partido', compact('canchas'));
@@ -60,13 +57,7 @@ class PartidoController extends Controller
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string|max:1000',
-            'cancha_id' => [
-                'required',
-                'integer',
-                \Illuminate\Validation\Rule::exists('canchas', 'id')->where(function ($query) {
-                    $query->where('activa', true);
-                }),
-            ],
+            'cancha_id' => ['required', 'integer', \Illuminate\Validation\Rule::exists('canchas', 'id')->where('activa', true)],
             'fecha' => 'required|date|after:now',
             'hora' => 'required',
             'nivel' => 'required|in:casual,serio',
@@ -74,11 +65,7 @@ class PartidoController extends Controller
             'costo_por_jugador' => 'required|numeric|min:0',
         ]);
 
-        abort_unless(Cancha::whereKey($request->cancha_id)
-            ->whereHas('propietario', fn ($query) => $query
-                ->where('role', \App\Models\User::ROLE_COURT_OWNER)
-                ->where('is_suspended', false))
-            ->exists(), 422);
+        abort_unless(Cancha::publicadas()->whereKey($request->cancha_id)->exists(), 422);
 
         $fechaHora = Carbon::parse($request->fecha.' '.$request->hora);
         $horaFin = $fechaHora->copy()->addHours(2); // Asumir 2 horas de duración por defecto
@@ -175,10 +162,6 @@ class PartidoController extends Controller
     {
         return Partido::query()
             ->whereIn('estado', ['publicado', 'completo'])
-            ->whereHas('cancha', fn ($query) => $query
-                ->where('activa', true)
-                ->whereHas('propietario', fn ($owner) => $owner
-                    ->where('role', \App\Models\User::ROLE_COURT_OWNER)
-                    ->where('is_suspended', false)));
+            ->whereHas('cancha', fn ($query) => $query->publicadas());
     }
 }

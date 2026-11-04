@@ -29,13 +29,23 @@ class LoginController extends Controller
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            if (Auth::user()->is_suspended) {
+            if (Auth::user()->is_suspended || Auth::user()->owner_status === 'suspendido') {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
                 return back()->withErrors([
                     'email' => 'Tu cuenta está suspendida. Contactá al equipo de FaltaUno.',
+                ])->onlyInput('email');
+            }
+
+            if (Auth::user()->owner_status === 'invitado') {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => 'Completá la invitación desde el enlace enviado a tu email.',
                 ])->onlyInput('email');
             }
 

@@ -804,6 +804,12 @@
                         <span class="px-3 small text-uppercase text-white-50">Plataforma</span>
                     </div>
                     <div class="nav-item">
+                        <a href="{{ route('admin.duenos.index') }}" class="nav-link {{ request()->routeIs('admin.duenos.*') ? 'active' : '' }}">
+                            <i class="fas fa-user-tie"></i>
+                            Gestión de dueños
+                        </a>
+                    </div>
+                    <div class="nav-item">
                         <a href="{{ route('admin.moderacion.usuarios.index') }}" class="nav-link {{ request()->routeIs('admin.moderacion.usuarios.*') ? 'active' : '' }}">
                             <i class="fas fa-users"></i>
                             Usuarios y roles
@@ -819,6 +825,12 @@
                         <a href="{{ route('admin.moderacion.partidos.index') }}" class="nav-link {{ request()->routeIs('admin.moderacion.partidos.*') ? 'active' : '' }}">
                             <i class="fas fa-flag"></i>
                             Moderar partidos
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="{{ route('admin.moderacion.actividad.index') }}" class="nav-link {{ request()->routeIs('admin.moderacion.actividad.*') ? 'active' : '' }}">
+                            <i class="fas fa-clipboard-list"></i>
+                            Registro de actividad
                         </a>
                     </div>
                 @endif

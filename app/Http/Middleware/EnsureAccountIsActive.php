@@ -10,7 +10,9 @@ class EnsureAccountIsActive
 {
     public function handle(Request $request, Closure $next): Response
     {
-        abort_if($request->user()?->is_suspended, 403, 'Tu cuenta está suspendida.');
+        $user = $request->user();
+        abort_if($user?->is_suspended || $user?->owner_status === 'suspendido', 403, 'Tu cuenta está suspendida.');
+        abort_if($user?->owner_status === 'invitado', 403, 'Primero definí tu contraseña desde el enlace enviado por email.');
 
         return $next($request);
     }
