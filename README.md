@@ -59,3 +59,16 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Roles de FaltaUno
+
+Las cuentas nuevas se registran como **Jugador**. El **Dueño de cancha** y el **Admin de plataforma** tienen permisos adicionales; los dueños pueden administrar únicamente sus canchas, turnos y reservas. El Admin puede asignar o retirar el rol de dueño, suspender cuentas y moderar canchas y partidos. Las canchas activas se publican automáticamente, sin aprobación previa; el Admin puede suspenderlas posteriormente desde el panel.
+
+Después de ejecutar las migraciones, registrá la cuenta que será el primer administrador y asignale el rol desde la consola:
+
+```bash
+php artisan migrate
+php artisan app:make-admin admin@tu-dominio.com
+```
+
+El comando solo acepta el email de una cuenta existente y no solicita ni modifica su contraseña. Luego, desde el panel, el administrador puede asignar el rol de Dueño de cancha a las cuentas correspondientes.

@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReservaController extends Controller
 {
@@ -17,24 +18,18 @@ class ReservaController extends Controller
      */
     public function index()
     {
-        $usuario = Auth::user();
-        
-        // Obtener todas las reservas de las canchas del usuario
-        $canchasIds = Cancha::where('propietario_id', $usuario->id)->pluck('id');
-        
-        $reservas = Reserva::with(['cancha', 'usuario'])
-            ->whereIn('cancha_id', $canchasIds)
+        $reservas = $this->managedReservas()->with(['cancha', 'usuario'])
             ->orderBy('fecha_hora_inicio', 'desc')
             ->paginate(15);
 
         // Estadísticas
         $estadisticas = [
             'total' => $reservas->total(),
-            'pendientes' => Reserva::whereIn('cancha_id', $canchasIds)->pendientes()->count(),
-            'confirmadas' => Reserva::whereIn('cancha_id', $canchasIds)->confirmadas()->count(),
-            'completadas' => Reserva::whereIn('cancha_id', $canchasIds)->completadas()->count(),
-            'canceladas' => Reserva::whereIn('cancha_id', $canchasIds)->canceladas()->count(),
-            'ingresos_mes' => Reserva::whereIn('cancha_id', $canchasIds)
+            'pendientes' => $this->managedReservas()->pendientes()->count(),
+            'confirmadas' => $this->managedReservas()->confirmadas()->count(),
+            'completadas' => $this->managedReservas()->completadas()->count(),
+            'canceladas' => $this->managedReservas()->canceladas()->count(),
+            'ingresos_mes' => $this->managedReservas()
                 ->where('estado', 'completada')
                 ->whereMonth('fecha', now()->month)
                 ->sum('monto_final')
@@ -48,10 +43,7 @@ class ReservaController extends Controller
      */
     public function create()
     {
-        $usuario = Auth::user();
-        $canchas = Cancha::where('propietario_id', $usuario->id)
-            ->where('activa', true)
-            ->get();
+        $canchas = $this->managedCanchas()->where('activa', true)->get();
 
         return view('admin.reservas.create', compact('canchas'));
     }
@@ -62,7 +54,7 @@ class ReservaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'cancha_id' => 'required|exists:canchas,id',
+            'cancha_id' => 'required|integer',
             'titulo' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'fecha' => 'required|date|after_or_equal:today',
@@ -75,9 +67,7 @@ class ReservaController extends Controller
         ]);
 
         // Verificar que la cancha pertenece al usuario
-        $cancha = Cancha::where('id', $request->cancha_id)
-            ->where('propietario_id', Auth::id())
-            ->firstOrFail();
+        $cancha = $this->managedCanchas()->whereKey($request->cancha_id)->firstOrFail();
 
         // Calcular fechas y montos
         $fechaHoraInicio = \Carbon\Carbon::parse($request->fecha . ' ' . $request->hora_inicio);
@@ -124,7 +114,7 @@ class ReservaController extends Controller
     public function show(Reserva $reserva)
     {
         // Verificar que la reserva pertenece a una cancha del usuario
-        $this->authorize('view', $reserva);
+        $reserva = $this->findManagedReserva($reserva);
         
         $reserva->load(['cancha', 'usuario']);
         
@@ -136,12 +126,9 @@ class ReservaController extends Controller
      */
     public function edit(Reserva $reserva)
     {
-        $this->authorize('update', $reserva);
+        $reserva = $this->findManagedReserva($reserva);
         
-        $usuario = Auth::user();
-        $canchas = Cancha::where('propietario_id', $usuario->id)
-            ->where('activa', true)
-            ->get();
+        $canchas = $this->managedCanchas()->where('activa', true)->get();
 
         return view('admin.reservas.edit', compact('reserva', 'canchas'));
     }
@@ -151,7 +138,7 @@ class ReservaController extends Controller
      */
     public function update(Request $request, Reserva $reserva)
     {
-        $this->authorize('update', $reserva);
+        $reserva = $this->findManagedReserva($reserva);
 
         $request->validate([
             'titulo' => 'required|string|max:255',
@@ -205,7 +192,7 @@ class ReservaController extends Controller
      */
     public function destroy(Reserva $reserva)
     {
-        $this->authorize('delete', $reserva);
+        $reserva = $this->findManagedReserva($reserva);
         
         $reserva->delete();
 
@@ -219,7 +206,7 @@ class ReservaController extends Controller
      */
     public function cambiarEstado(Request $request, Reserva $reserva)
     {
-        $this->authorize('update', $reserva);
+        $reserva = $this->findManagedReserva($reserva);
 
         $request->validate([
             'estado' => 'required|in:pendiente,confirmada,en_curso,completada,cancelada,no_show,reembolsada'
@@ -240,11 +227,7 @@ class ReservaController extends Controller
         $fecha = $request->fecha;
         $canchaId = $request->cancha_id;
         
-        $usuario = Auth::user();
-        $canchasIds = Cancha::where('propietario_id', $usuario->id)->pluck('id');
-        
-        $reservas = Reserva::with(['cancha', 'usuario'])
-            ->whereIn('cancha_id', $canchasIds)
+        $reservas = $this->managedReservas()->with(['cancha', 'usuario'])
             ->where('fecha', $fecha);
             
         if ($canchaId) {
@@ -252,5 +235,34 @@ class ReservaController extends Controller
         }
         
         return response()->json($reservas->get());
+    }
+
+    private function managedCanchas(): Builder
+    {
+        $query = Cancha::query();
+
+        if (!Auth::user()->isPlatformAdmin()) {
+            $query->where('propietario_id', Auth::id());
+        }
+
+        return $query;
+    }
+
+    private function managedReservas(): Builder
+    {
+        $query = Reserva::query();
+
+        if (!Auth::user()->isPlatformAdmin()) {
+            $query->whereHas('cancha', function ($query) {
+                $query->where('propietario_id', Auth::id());
+            });
+        }
+
+        return $query;
+    }
+
+    private function findManagedReserva(Reserva $reserva): Reserva
+    {
+        return $this->managedReservas()->findOrFail($reserva->id);
     }
 }

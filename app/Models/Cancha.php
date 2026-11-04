@@ -44,13 +44,14 @@ class Cancha extends Model
         'porcentaje_penalidad_cancelacion',
         'activa',
         'verificada',
+        'suspendida_admin',
         'destacada',
         'fecha_verificacion',
         'imagenes',
         'imagen_principal',
         'horarios_semana',
         'horarios_fin_semana',
-        'dias_cerrado'
+        'dias_cerrado',
     ];
 
     protected $casts = [
@@ -66,6 +67,7 @@ class Cancha extends Model
         'tiene_techado' => 'boolean',
         'activa' => 'boolean',
         'verificada' => 'boolean',
+        'suspendida_admin' => 'boolean',
         'destacada' => 'boolean',
         'permite_cancelacion' => 'boolean',
         'fecha_verificacion' => 'datetime',
@@ -75,7 +77,7 @@ class Cancha extends Model
         'precio_base' => 'decimal:2',
         'precio_pico' => 'decimal:2',
         'precio_valle' => 'decimal:2',
-        'porcentaje_penalidad_cancelacion' => 'decimal:2'
+        'porcentaje_penalidad_cancelacion' => 'decimal:2',
     ];
 
     // Relaciones
@@ -118,28 +120,25 @@ class Cancha extends Model
 
     public function getPrecioFormateadoAttribute()
     {
-        return '$' . number_format($this->precio_base, 0, ',', '.');
+        return '$'.number_format($this->precio_base, 0, ',', '.');
     }
 
     public function getUbicacionCompletaAttribute()
     {
         $ubicacion = $this->ciudad;
         if ($this->barrio) {
-            $ubicacion .= ', ' . $this->barrio;
+            $ubicacion .= ', '.$this->barrio;
         }
+
         return $ubicacion;
     }
 
     public function getEstadoAttribute()
     {
-        if (!$this->activa) {
+        if (! $this->activa) {
             return 'Inactiva';
         }
-        
-        if ($this->verificada) {
-            return 'Verificada';
-        }
-        
-        return 'Pendiente de verificación';
+
+        return $this->verificada ? 'Activa y revisada' : 'Publicada';
     }
 }

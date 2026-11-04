@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Cancha;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 
 class CanchaController extends Controller
 {
@@ -21,9 +21,7 @@ class CanchaController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
-        
-        $query = Cancha::where('propietario_id', $user->id);
+        $query = $this->managedCanchas();
         
         // Filtros
         if ($request->filled('estado')) {
@@ -80,7 +78,7 @@ class CanchaController extends Controller
                 ->with('error', 'Debes iniciar sesión para crear una cancha');
         }
         
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string|max:1000',
             'telefono' => 'nullable|string|max:20',
@@ -112,8 +110,11 @@ class CanchaController extends Controller
             'horarios_fin_semana' => 'nullable|array',
         ]);
 
-        $data = $request->all();
+        $data = $validated;
         $data['propietario_id'] = Auth::id();
+        $data['activa'] = true;
+        $data['verificada'] = false;
+        $data['suspendida_admin'] = false;
         
         // Debug: Log de los datos procesados
         \Log::info('Datos procesados antes de crear:', $data);
@@ -179,7 +180,7 @@ class CanchaController extends Controller
      */
     public function show($id)
     {
-        $cancha = Cancha::where('propietario_id', Auth::id())->findOrFail($id);
+        $cancha = $this->managedCanchas()->findOrFail($id);
         return view('admin.canchas.show', compact('cancha'));
     }
 
@@ -188,7 +189,7 @@ class CanchaController extends Controller
      */
     public function edit($id)
     {
-        $cancha = Cancha::where('propietario_id', Auth::id())->findOrFail($id);
+        $cancha = $this->managedCanchas()->findOrFail($id);
         return view('admin.canchas.edit', compact('cancha'));
     }
 
@@ -197,9 +198,9 @@ class CanchaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $cancha = Cancha::where('propietario_id', Auth::id())->findOrFail($id);
+        $cancha = $this->managedCanchas()->findOrFail($id);
         
-        $request->validate([
+        $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string|max:1000',
             'telefono' => 'nullable|string|max:20',
@@ -231,7 +232,7 @@ class CanchaController extends Controller
             'horarios_fin_semana' => 'nullable|array',
         ]);
 
-        $data = $request->all();
+        $data = $validated;
         
         // Procesar amenities
         $amenities = [];
@@ -275,22 +276,16 @@ class CanchaController extends Controller
      */
     public function destroy($id)
     {
-        $cancha = Cancha::where('propietario_id', Auth::id())->findOrFail($id);
-        
-        // Eliminar imágenes del storage
-        if ($cancha->imagenes) {
-            foreach ($cancha->imagenes as $imagen) {
-                if (Storage::disk('public')->exists($imagen)) {
-                    Storage::disk('public')->delete($imagen);
-                }
-            }
-        }
-        
-        $cancha->delete();
+        $cancha = $this->managedCanchas()->findOrFail($id);
+
+        $cancha->update([
+            'activa' => false,
+            'suspendida_admin' => Auth::user()->isPlatformAdmin(),
+        ]);
         
         return redirect()
             ->route('admin.canchas.index')
-            ->with('success', 'Cancha eliminada exitosamente');
+            ->with('success', 'Cancha desactivada exitosamente');
     }
 
     /**
@@ -298,7 +293,12 @@ class CanchaController extends Controller
      */
     public function toggleEstado($id)
     {
-        $cancha = Cancha::where('propietario_id', Auth::id())->findOrFail($id);
+        $cancha = $this->managedCanchas()->findOrFail($id);
+
+        if ($cancha->suspendida_admin && !Auth::user()->isPlatformAdmin()) {
+            abort(403, 'Solo un administrador de plataforma puede reactivar una cancha suspendida.');
+        }
+
         $cancha->update(['activa' => !$cancha->activa]);
         
         $estado = $cancha->activa ? 'activada' : 'desactivada';
@@ -313,36 +313,13 @@ class CanchaController extends Controller
      */
     public function getDetails(Cancha $cancha)
     {
-        // Verificar que el usuario sea el propietario
-        if ($cancha->propietario_id !== Auth::id()) {
-            return response()->json(['error' => 'No tienes permisos para ver esta cancha'], 403);
-        }
+        abort_unless($this->managedCanchas()->whereKey($cancha->id)->exists(), 404);
 
         try {
             // Cargar la cancha con sus relaciones
             $cancha->load('propietario');
             
-            // Simular reservas (por ahora, ya que no tenemos el modelo de reservas)
-            $reservas = [
-                [
-                    'id' => 1,
-                    'fecha' => '2024-01-15',
-                    'hora_inicio' => '18:00',
-                    'hora_fin' => '19:00',
-                    'usuario_nombre' => 'Juan Pérez',
-                    'estado' => 'confirmada',
-                    'precio_total' => $cancha->precio_base
-                ],
-                [
-                    'id' => 2,
-                    'fecha' => '2024-01-16',
-                    'hora_inicio' => '20:00',
-                    'hora_fin' => '21:00',
-                    'usuario_nombre' => 'María García',
-                    'estado' => 'pendiente',
-                    'precio_total' => $cancha->precio_base
-                ]
-            ];
+            $reservas = $cancha->reservas()->with('usuario')->latest('fecha_hora_inicio')->limit(10)->get();
 
             return response()->json([
                 'cancha' => $cancha,
@@ -353,5 +330,17 @@ class CanchaController extends Controller
             
             return response()->json(['error' => 'Error al cargar la información de la cancha'], 500);
         }
+
+    }
+
+    private function managedCanchas(): Builder
+    {
+        $query = Cancha::query();
+
+        if (!Auth::user()->isPlatformAdmin()) {
+            $query->where('propietario_id', Auth::id());
+        }
+
+        return $query;
     }
 }

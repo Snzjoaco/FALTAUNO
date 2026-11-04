@@ -21,7 +21,9 @@ class DashboardController extends Controller
         $user = Auth::user();
         
         // Obtener estadísticas del usuario
-        $canchas = Cancha::where('propietario_id', $user->id)->get();
+        $canchas = $user->isPlatformAdmin()
+            ? Cancha::all()
+            : Cancha::where('propietario_id', $user->id)->get();
         
         // Estadísticas generales
         $totalCanchas = $canchas->count();

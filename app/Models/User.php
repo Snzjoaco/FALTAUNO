@@ -11,6 +11,10 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    public const ROLE_PLAYER = 'jugador';
+    public const ROLE_COURT_OWNER = 'dueno_cancha';
+    public const ROLE_PLATFORM_ADMIN = 'admin_plataforma';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -66,7 +70,23 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_suspended' => 'boolean',
         ];
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        return in_array($this->role, $roles, true);
+    }
+
+    public function isPlatformAdmin(): bool
+    {
+        return $this->role === self::ROLE_PLATFORM_ADMIN;
+    }
+
+    public function isCourtOwner(): bool
+    {
+        return $this->role === self::ROLE_COURT_OWNER;
     }
 
     // Relaciones

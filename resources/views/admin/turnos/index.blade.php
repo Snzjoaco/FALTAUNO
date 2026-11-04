@@ -1,8 +1,9 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Gestión de Turnos - FaltaUno')
+@section('page-title', 'Turnos')
 
-@section('styles')
+@push('styles')
 <style>
     .turno-card {
         background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
@@ -155,7 +156,7 @@
         color: #6c757d;
     }
 </style>
-@endsection
+@endpush
 
 @section('content')
 <div class="container-fluid">

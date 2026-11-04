@@ -1,8 +1,9 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Reservas - FaltaUno')
+@section('page-title', 'Reservas')
 
-@section('styles')
+@push('styles')
 <style>
     .stats-card {
         background: linear-gradient(135deg, var(--primary-green), var(--secondary-green));
@@ -171,7 +172,7 @@
         border-color: var(--primary-green);
     }
 </style>
-@endsection
+@endpush
 
 @section('content')
 <div class="container-fluid">

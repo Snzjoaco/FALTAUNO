@@ -50,6 +50,8 @@ class RegisterController extends Controller
             'is_verified' => true, // Verificado automáticamente
             'email_verified_at' => now(), // Marcar email como verificado
         ]);
+        $user->role = User::ROLE_PLAYER;
+        $user->save();
 
         Auth::login($user);
 

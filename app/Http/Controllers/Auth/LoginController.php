@@ -29,6 +29,16 @@ class LoginController extends Controller
         if (Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            if (Auth::user()->is_suspended) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => 'Tu cuenta está suspendida. Contactá al equipo de FaltaUno.',
+                ])->onlyInput('email');
+            }
+
             return redirect()->intended('/');
         }
 

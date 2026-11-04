@@ -7,6 +7,7 @@ use App\Models\Turno;
 use App\Models\Cancha;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
 class TurnoController extends Controller
@@ -16,13 +17,9 @@ class TurnoController extends Controller
      */
     public function index(Request $request)
     {
-        $usuario = Auth::user();
         $canchaId = $request->get('cancha_id');
         
-        $query = Turno::with('cancha')
-            ->whereHas('cancha', function($q) use ($usuario) {
-                $q->where('propietario_id', $usuario->id);
-            });
+        $query = $this->managedTurnos()->with('cancha');
             
         if ($canchaId) {
             $query->where('cancha_id', $canchaId);
@@ -32,9 +29,7 @@ class TurnoController extends Controller
             ->orderBy('hora_inicio')
             ->paginate(20);
             
-        $canchas = Cancha::where('propietario_id', $usuario->id)
-            ->where('activa', true)
-            ->get();
+        $canchas = $this->managedCanchas()->where('activa', true)->get();
             
         return view('admin.turnos.index', compact('turnos', 'canchas', 'canchaId'));
     }
@@ -44,14 +39,12 @@ class TurnoController extends Controller
      */
     public function create(Request $request)
     {
-        $usuario = Auth::user();
         $canchaId = $request->get('cancha_id');
         
-        $canchas = Cancha::where('propietario_id', $usuario->id)
-            ->where('activa', true)
-            ->get();
-            
-        $cancha = $canchaId ? Cancha::find($canchaId) : $canchas->first();
+        $canchas = $this->managedCanchas()->where('activa', true)->get();
+        $cancha = $canchaId
+            ? $this->managedCanchas()->where('activa', true)->findOrFail($canchaId)
+            : $canchas->first();
         
         return view('admin.turnos.create', compact('canchas', 'cancha'));
     }
@@ -83,9 +76,7 @@ class TurnoController extends Controller
         ]);
 
         // Verificar que la cancha pertenece al usuario
-        $cancha = Cancha::where('id', $request->cancha_id)
-            ->where('propietario_id', Auth::id())
-            ->firstOrFail();
+        $cancha = $this->managedCanchas()->whereKey($request->cancha_id)->firstOrFail();
 
         // Calcular duración en minutos
         $horaInicio = Carbon::parse($request->hora_inicio);
@@ -137,7 +128,7 @@ class TurnoController extends Controller
     public function show(Turno $turno)
     {
         // Verificar que el turno pertenece a una cancha del usuario
-        $this->authorize('view', $turno);
+        $turno = $this->findManagedTurno($turno);
         
         $turno->load('cancha');
         
@@ -149,12 +140,9 @@ class TurnoController extends Controller
      */
     public function edit(Turno $turno)
     {
-        $this->authorize('update', $turno);
+        $turno = $this->findManagedTurno($turno);
         
-        $usuario = Auth::user();
-        $canchas = Cancha::where('propietario_id', $usuario->id)
-            ->where('activa', true)
-            ->get();
+        $canchas = $this->managedCanchas()->where('activa', true)->get();
             
         return view('admin.turnos.edit', compact('turno', 'canchas'));
     }
@@ -164,7 +152,7 @@ class TurnoController extends Controller
      */
     public function update(Request $request, Turno $turno)
     {
-        $this->authorize('update', $turno);
+        $turno = $this->findManagedTurno($turno);
 
         $request->validate([
             'nombre' => 'required|string|max:255',
@@ -234,7 +222,7 @@ class TurnoController extends Controller
      */
     public function destroy(Turno $turno)
     {
-        $this->authorize('delete', $turno);
+        $turno = $this->findManagedTurno($turno);
         
         $canchaId = $turno->cancha_id;
         $turno->delete();
@@ -249,7 +237,7 @@ class TurnoController extends Controller
      */
     public function toggleEstado(Turno $turno)
     {
-        $this->authorize('update', $turno);
+        $turno = $this->findManagedTurno($turno);
         
         $turno->update(['activo' => !$turno->activo]);
         
@@ -268,12 +256,7 @@ class TurnoController extends Controller
         $canchaId = $request->cancha_id;
         $dia = $request->dia;
         
-        $usuario = Auth::user();
-        
-        $query = Turno::where('cancha_id', $canchaId)
-            ->whereHas('cancha', function($q) use ($usuario) {
-                $q->where('propietario_id', $usuario->id);
-            });
+        $query = $this->managedTurnos()->where('cancha_id', $canchaId);
             
         if ($dia) {
             $query->where('dia_semana', $dia);
@@ -282,5 +265,34 @@ class TurnoController extends Controller
         $turnos = $query->orderBy('hora_inicio')->get();
         
         return response()->json($turnos);
+    }
+
+    private function managedCanchas(): Builder
+    {
+        $query = Cancha::query();
+
+        if (!Auth::user()->isPlatformAdmin()) {
+            $query->where('propietario_id', Auth::id());
+        }
+
+        return $query;
+    }
+
+    private function managedTurnos(): Builder
+    {
+        $query = Turno::query();
+
+        if (!Auth::user()->isPlatformAdmin()) {
+            $query->whereHas('cancha', function ($query) {
+                $query->where('propietario_id', Auth::id());
+            });
+        }
+
+        return $query;
+    }
+
+    private function findManagedTurno(Turno $turno): Turno
+    {
+        return $this->managedTurnos()->findOrFail($turno->id);
     }
 }

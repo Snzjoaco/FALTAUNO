@@ -1,8 +1,9 @@
 @extends('layouts.dashboard')
 
 @section('title', 'Crear Turno - FaltaUno')
+@section('page-title', 'Crear Turno')
 
-@section('styles')
+@push('styles')
 <style>
     .form-section {
         background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
@@ -97,7 +98,7 @@
         font-weight: bold;
     }
 </style>
-@endsection
+@endpush
 
 @section('content')
 <div class="container-fluid">

@@ -20,38 +20,6 @@
     </script>
 @endif
 
-<!-- Botón de prueba para verificar notificaciones -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Crear botón de prueba
-    const testButton = document.createElement('button');
-    testButton.innerHTML = '🧪 Probar Notificaciones';
-    testButton.style.cssText = `
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        z-index: 10000;
-        background: #007bff;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 12px;
-    `;
-    testButton.onclick = function() {
-        if (window.showToast) {
-            showToast.success('¡Notificación de prueba funcionando!');
-            showToast.error('Error de prueba');
-            showToast.warning('Advertencia de prueba');
-            showToast.info('Información de prueba');
-        } else {
-            alert('showToast no está disponible');
-        }
-    };
-    document.body.appendChild(testButton);
-});
-</script>
 <style>
     * {
         box-sizing: border-box;
@@ -685,13 +653,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         .action-btn, .map-btn {
-            width: 48%;
+            width: 100%;
             margin-bottom: 0.5rem;
-            margin-right: 2%;
-        }
-        
-        .action-btn:last-child, .map-btn:last-child {
             margin-right: 0;
+            justify-content: center;
         }
         
         .stats-item {
@@ -807,7 +772,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <i class="fas fa-map-marker-alt text-muted"></i>
                                 </span>
                                 <input type="text" class="form-control search-input border-start-0" 
-                                       placeholder="Ingresa ubicación (ej. Palermo, Buenos Aires)">
+                                       placeholder="Ingresa ubicación (ej. Río Cuarto, Córdoba)">
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -821,11 +786,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 <!-- Action Buttons -->
                 <div class="mb-4">
-                    <a href="#" class="action-btn">
+                    <a href="{{ route('register') }}" class="action-btn">
                         <i class="fas fa-plus-circle"></i>
                         Crear publicación
                     </a>
-                    <a href="#" class="map-btn">
+                    <a href="{{ route('reservar-canchas') }}" class="map-btn">
                         <i class="fas fa-map"></i>
                         Ver mapa
                     </a>
@@ -836,19 +801,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="col-md-4">
                         <div class="stats-item">
                             <i class="fas fa-users text-primary"></i>
-                            <span>1.5k+ jugadores</span>
+                            <span>0 jugadores</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="stats-item">
                             <i class="fas fa-futbol text-primary"></i>
-                            <span>120+ canchas</span>
+                            <span>0 canchas</span>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="stats-item">
                             <i class="fas fa-calendar text-primary"></i>
-                            <span>300+ partidos/sem</span>
+                            <span>0 partidos/sem</span>
                         </div>
                     </div>
                 </div>
@@ -904,7 +869,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Featured Courts Section -->
 <section class="featured-section">
     <div class="container">
-        <h2 class="section-title">Canchas destacadas</h2>
+        <h2 class="section-title">Canchas de la zona</h2>
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="pitch-card">
@@ -912,20 +877,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="fas fa-futbol fa-3x"></i>
                     </div>
                     <div class="pitch-info">
-                        <div class="pitch-name">F5 Arena Palermo</div>
-                        <div class="pitch-location">Palermo</div>
-                        <div class="pitch-price">$20/h</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="pitch-card">
-                    <div class="pitch-image">
-                        <i class="fas fa-futbol fa-3x"></i>
-                    </div>
-                    <div class="pitch-info">
-                        <div class="pitch-name">Parque Norte 7</div>
-                        <div class="pitch-location">Nuñez</div>
+                        <div class="pitch-name">Complejo La Candelaria</div>
+                        <div class="pitch-location">Río Cuarto</div>
                         <div class="pitch-price">$18/h</div>
                     </div>
                 </div>
@@ -936,8 +889,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="fas fa-futbol fa-3x"></i>
                     </div>
                     <div class="pitch-info">
-                        <div class="pitch-name">Villa Urquiza Club</div>
-                        <div class="pitch-location">Villa Urquiza</div>
+                        <div class="pitch-name">Club Deportivo Río</div>
+                        <div class="pitch-location">Río Cuarto</div>
+                        <div class="pitch-price">$20/h</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="pitch-card">
+                    <div class="pitch-image">
+                        <i class="fas fa-futbol fa-3x"></i>
+                    </div>
+                    <div class="pitch-info">
+                        <div class="pitch-name">Cancha Norte 7</div>
+                        <div class="pitch-location">Río Cuarto</div>
                         <div class="pitch-price">$22/h</div>
                     </div>
                 </div>
@@ -949,39 +914,39 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Recent Matches Section -->
 <section class="recent-section">
     <div class="container">
-        <h2 class="section-title">Partidos recientes</h2>
+        <h2 class="section-title">Partidos en la zona</h2>
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="match-card">
-                    <div class="match-title">Mixto 6v6 en F5 Arena</div>
+                    <div class="match-title">Partido casual 5v5 - Río Cuarto</div>
                     <div class="match-tags">
-                        <span class="match-tag">Hoy 20:00</span>
-                        <span class="match-tag">Nivel intermedio</span>
-                        <span class="match-tag">3 jugadores</span>
+                        <span class="match-tag">Viernes 20:00</span>
+                        <span class="match-tag">Todos los niveles</span>
+                        <span class="match-tag">Faltan 2</span>
                     </div>
                     <div class="match-price">$5 p/p</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="match-card">
-                    <div class="match-title">Pickup 5v5 Nuñez</div>
+                    <div class="match-title">Turno abierto en La Candelaria</div>
                     <div class="match-tags">
-                        <span class="match-tag">Mañana 19:30</span>
-                        <span class="match-tag">Todos los niveles</span>
-                        <span class="match-tag">2 jugadores</span>
+                        <span class="match-tag">Sábado 19:30</span>
+                        <span class="match-tag">5v5</span>
+                        <span class="match-tag">Faltan 1</span>
                     </div>
-                    <div class="match-price">$4 p/p</div>
+                    <div class="match-price">$6 p/p</div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="match-card">
-                    <div class="match-title">Torneo relámpago Villa Urquiza</div>
+                    <div class="match-title">Partido amistoso - Norte</div>
                     <div class="match-tags">
-                        <span class="match-tag">Sáb 17:00</span>
-                        <span class="match-tag">Avanzado</span>
-                        <span class="match-tag">5 cupos</span>
+                        <span class="match-tag">Domingo 17:00</span>
+                        <span class="match-tag">Intermedio</span>
+                        <span class="match-tag">Faltan 3</span>
                     </div>
-                    <div class="match-price">$10 p/p</div>
+                    <div class="match-price">$7 p/p</div>
                 </div>
             </div>
         </div>
@@ -1054,15 +1019,15 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="benefit-item">
                 <i class="fas fa-users"></i>
-                <span>Acceso a 1.5k+ jugadores</span>
+                <span>Cobertura local</span>
             </div>
             <div class="benefit-item">
                 <i class="fas fa-calendar-check"></i>
-                <span>Recomendacion dentro del sitio</span>
+                <span>Promoción dentro del sitio</span>
             </div>
         </div>
         
-        <a href="#referral" class="btn-referral">
+        <a href="{{ route('register') }}" class="btn-referral">
             <i class="fas fa-handshake"></i>
             Únete al plan de referidos
         </a>

@@ -416,9 +416,11 @@
                     <a href="{{ route('reservar-canchas') }}">Reservar Canchas</a>
                     <a href="{{ route('mis-partidos') }}">Mis Partidos</a>
                     @auth
+                    @if (Auth::user()->hasAnyRole([\App\Models\User::ROLE_COURT_OWNER, \App\Models\User::ROLE_PLATFORM_ADMIN]))
                     <a href="{{ route('admin.dashboard') }}">
                         <i class="fas fa-tachometer-alt"></i>Dashboard
                     </a>
+                    @endif
                     @endauth
                 </nav>
                 

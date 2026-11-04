@@ -2,7 +2,7 @@
 
 @section('title', 'Mis Canchas - FaltaUno')
 
-@section('styles')
+@push('styles')
 <style>
     .cancha-card {
         transition: all 0.3s ease;
@@ -221,7 +221,7 @@
         padding: 0.75rem;
     }
 </style>
-@endsection
+@endpush
 
 @push('scripts')
 <script>
@@ -555,7 +555,7 @@ function viewReserva(reservaId) {
 <div class="row">
     @if($canchas->count() > 0)
         @foreach($canchas as $cancha)
-        <div class="col-lg-3 col-xl-2 mb-3">
+        <div class="col-sm-6 col-xl-4 mb-3">
             <div class="card cancha-card" id="cancha-{{ $cancha->id }}">
                 <!-- Imagen de la cancha -->
                 <div class="position-relative">
